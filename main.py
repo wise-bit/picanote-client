@@ -1,7 +1,6 @@
 import tkinter as tk  
 from tkinter import ttk
 from tkinter.ttk import Style
-# import the necessary packages
 from PIL import Image
 import pytesseract
 import cv2
@@ -30,13 +29,15 @@ class Text(tk.Text):
 
 
 
-def postAndDeleteImage():
+def postAndDeleteImage(hasImage):
 	global auth_string
 
 	# TODO: upload to bucket
 	print(request_body)
 
-	os.remove(filename)
+	if hasImage:
+		os.remove(filename)
+
 	return
 
 
@@ -119,11 +120,15 @@ def main():
 	# lbl = ttk.Label(win, text = "Enter the name:").grid(column = 0, row = 0)# Click event  
 	# Textbox widget  
 	def submitTextnote():
+		global request_body
+
 		textBody = textbox.get("1.0","end")
 		request_body = {
 			"image": "",
 			"text": textBody
 		}
+
+		postAndDeleteImage(False)
 		# print(textBody)# Textbox widget 
 		textbox.delete(1.0,"end")
 
@@ -157,7 +162,7 @@ def main():
 				# print(data)
 		
 		# Will send image
-		postAndDeleteImage()
+		postAndDeleteImage(True)
 
 		print("function is complete")
 
