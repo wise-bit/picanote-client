@@ -87,7 +87,7 @@ class Application():
         root.deiconify()
 
     def exit_application(self):
-        print("Application exit")
+        # print("Application exit")
         root.quit()
         # sys.exit(0)
 

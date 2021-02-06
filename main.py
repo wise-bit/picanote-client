@@ -7,10 +7,12 @@ import pytesseract
 import cv2
 import os
 import ss
+import base64
+import json
 
 
 filename = "tempImage.png"
-
+request_body = {}
 
 class Text(tk.Text):
 	@property
@@ -29,6 +31,7 @@ class Text(tk.Text):
 def postAndDeleteImage():
 
 	# TODO: upload to bucket
+	print(request_body)
 
 	os.remove(filename)
 	return
@@ -54,6 +57,7 @@ def imageOCRtoText(filename):
 	# load the image as a PIL/Pillow image, apply OCR, and then delete
 	# the temporary file
 	
+	# MODIFY THIS TO YOUR TESSERACT INSTALLATION
 	pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 	text = pytesseract.image_to_string(Image.open(tempFilename))
@@ -112,28 +116,47 @@ def main():
 	# lbl = ttk.Label(win, text = "Enter the name:").grid(column = 0, row = 0)# Click event  
 	# Textbox widget  
 	def submitTextnote():
-		print(textbox.get("1.0","end"))# Textbox widget 
+		textBody = textbox.get("1.0","end")
+		request_body = {
+			"image": "",
+			"text": textBody
+		}
+		# print(textBody)# Textbox widget 
 		textbox.delete(1.0,"end")
 
 
 	textbutton = tk.Button(win, width = 15, text = "SAVE NOTE", command = submitTextnote, bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightthickness=10)
-	textbutton = textbutton.grid(column = 0, row = 1, columnspan = 2, sticky = tk.W+tk.E)
+	textbutton.grid(column = 0, row = 1, columnspan = 2, sticky = tk.W+tk.E)
 
 
 	def takeScreenshot(isOCR):
+		global request_body
 		# Screenshotting function goes here
 
 		os.system('python3 ss.py')
 
 		if isOCR:
 			textBody = imageOCRtoText(filename)
-			print(textBody)
 			# Will send text
-			return
+			request_body = {
+				"image": "",
+				"text": textBody
+			}
+			# print(textBody)
 		else:
-			print(filename)
-			# Will send image
-			return
+			with open(filename, "rb") as image_file:
+				data = base64.b64encode(image_file.read())
+				# Will send image
+				request_body = {
+					"image": data,
+					"text": ""
+				}
+				# print(data)
+		
+		# Will send image
+		postAndDeleteImage()
+
+		print("function is complete")
 
 
 	# button = ttk.Button(win, width = 10, text = "Screenshot\nwith OCR", command = submitTextnote, relief=tk.GROOVE).grid(column = 0, row = 2)
