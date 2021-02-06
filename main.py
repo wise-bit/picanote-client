@@ -14,6 +14,8 @@ import json
 filename = "tempImage.png"
 request_body = {}
 
+auth_string = ""
+
 class Text(tk.Text):
 	@property
 	def text(self) -> str:
@@ -29,6 +31,7 @@ class Text(tk.Text):
 
 
 def postAndDeleteImage():
+	global auth_string
 
 	# TODO: upload to bucket
 	print(request_body)
@@ -165,10 +168,19 @@ def main():
 	noOCRbutton = tk.Button(win, width = 15, text = "SCREENSHOT\n (NO OCR)", command = lambda : takeScreenshot(False), bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightthickness=10)
 	noOCRbutton.grid(column = 1, row = 2)
 
-	def submitAuthstring():   
-		print(authstring.get())# Textbox widget 
-		authbox.configure({"background": "#cdff94"})
-		authbox.configure({"background": "#ffb0b0"})
+	def submitAuthstring():
+		global auth_string
+
+		auth_string = authstring.get()
+
+		# print(authstring.get())
+
+		# TODO: Check
+		valid = True
+		if valid:
+			authbox.configure({"background": "#cdff94"})
+		else:
+			authbox.configure({"background": "#ffb0b0"})
 
 	authstring = tk.StringVar()  
 	authbox = tk.Entry(win, width = 15, textvariable = authstring, font=('Helvetica', 16, 'bold'), fg = "#237699", bg = "#d4effa", highlightcolor="#a7e2fa", highlightbackground="#a7e2fa", highlightthickness=8, show="*")
