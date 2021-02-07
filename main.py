@@ -49,6 +49,7 @@ def postAndDeleteImage(hasImage):
 	print(url)
 	print(request_body)
 	print(requestpost.text)
+	print(headers)
 
 	try:
 		response_data = requestpost.json()
@@ -191,9 +192,9 @@ def main():
 
 
 	# button = ttk.Button(win, width = 10, text = "Screenshot\nwith OCR", command = submitTextnote, relief=tk.GROOVE).grid(column = 0, row = 2)
-	OCRbutton = tk.Button(win, width = 15, text = "SCREENSHOT\n  (OCR)", command = lambda : takeScreenshot(True), bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightcolor="#e39846", highlightbackground="#e39846", highlightthickness=10)
+	OCRbutton = tk.Button(win, width = 15, text = "SCREENSHOT\n(TO TEXT)", command = lambda : takeScreenshot(True), bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightcolor="#e39846", highlightbackground="#e39846", highlightthickness=10)
 	OCRbutton.grid(column = 0, row = 2)
-	noOCRbutton = tk.Button(win, width = 15, text = "SCREENSHOT\n (NO OCR)", command = lambda : takeScreenshot(False), bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightthickness=10)
+	noOCRbutton = tk.Button(win, width = 15, text = "SCREENSHOT\n(TO IMAGE)", command = lambda : takeScreenshot(False), bg='#ffd4a6', fg='#a36c31', font = ('Helvetica', 10, 'bold'), highlightthickness=10)
 	noOCRbutton.grid(column = 1, row = 2)
 
 	def submitAuthstring():
