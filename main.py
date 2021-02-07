@@ -8,12 +8,16 @@ import os
 import ss
 import base64
 import json
+import requests
+import pyautogui as pag
 
 
 filename = "tempImage.png"
 request_body = {}
 
 auth_string = ""
+url = 'https://us-central1-uottahj.cloudfunctions.net/app/picture'
+
 
 class Text(tk.Text):
 	@property
@@ -28,12 +32,31 @@ class Text(tk.Text):
 		tk.Text.__init__(self, master, **kwargs)
 
 
-
 def postAndDeleteImage(hasImage):
 	global auth_string
+	global url
 
-	# TODO: upload to bucket
+	if request_body["image"] == '' and request_body["text"] == '':
+		pag.alert(text="No data was found ;-; please try again", title="Uh oh")
+		return
+
+	# header
+	headers = {'nanoid': auth_string}
+
+	# Make request
+	requestpost = requests.post(url, data = request_body, headers = headers)
+
+	print(url)
 	print(request_body)
+	print(requestpost.text)
+
+	try:
+		response_data = requestpost.json()
+		success = response_data["success"]
+		if not success:
+			pag.alert(text="Request error [404]", title="Uh oh")
+	except:
+		pag.alert(text="Request error [404]", title="Uh oh")
 
 	if hasImage:
 		os.remove(filename)
@@ -153,7 +176,7 @@ def main():
 			# print(textBody)
 		else:
 			with open(filename, "rb") as image_file:
-				data = base64.b64encode(image_file.read())
+				data = "data:image/png;base64," + str(base64.b64encode(image_file.read()), 'utf-8')
 				# Will send image
 				request_body = {
 					"image": data,
